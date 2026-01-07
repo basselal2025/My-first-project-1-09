@@ -1208,7 +1208,7 @@ select {
   }
 
   .widget__icons {
-    margin-right: 125px;
+    margin-right:60px;
   }
 
   .nav-bar {
@@ -1276,12 +1276,14 @@ select {
   }
 
   .pagination__info {
-    justify-content: center;
-    flex-wrap: wrap;
-    row-gap: 10px;
-           width: 92%;
+justify-content: center;
+        flex-wrap: wrap;
+        row-gap: 10px;
+        width: 100%;
+        margin: 0;
+
        
-        margin-right: 10px;
+        font-size: 13px;
   }
 
   .pagination {
