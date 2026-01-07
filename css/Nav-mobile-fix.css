@@ -1,0 +1,308 @@
+/* 
+  index-combined CSS snippet (nav + mobile fix)
+  -------------------------
+  - ضع هذا الملف في أسفل ملف css/index.css أو احفظه كـ css/nav-mobile-fix.css واربطه بعد index.css
+  - لا يحذف أو يغير أي شيء من كودك القديم — فقط يضيف قواعد آمنة ومتوافقة للتعامل مع القوائم المنسدلة على الجوال
+  - يعمل مع بنية HTML التي فيها داخل كل <nav class="nav-dropdown">:  <input type="checkbox"> + <label> + <ul class="nav-dropdown__list"> ...
+  - تأكد أن ترتيب العناصر في HTML هو: input + label + ul داخل نفس الأب (nav.nav-dropdown)
+*/
+
+/* ================== NAVBAR / DROPDOWN FIX (SAFE) ================== */
+
+/* نخفي checkbox بصرياً لكن يبقى موجوداً للوصول عن طريق الـ label */
+.nav-dropdown input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* label يمثل زر الفتح/الإغلاق - نضمن أنه قابل للضغط */
+.nav-dropdown > label,
+.nav-dropdown > .nav__item,
+.nav-dropdown > .nav-dropdown__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* القائمة المخفية افتراضياً */
+.nav-dropdown__list {
+  display: none; /* مخفية بشكل افتراضي */
+  flex-direction: column;
+  gap: 0;
+  padding: 6px 0;
+  margin: 4px 0 0 0;
+  list-style: none;
+  background: white;
+  border: 1px solid #e6e6e6;
+  min-width: 180px;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0; /* مناسب للـ RTL */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  z-index: 999;
+  transition: opacity 180ms ease, transform 180ms ease;
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* إظهار القائمة عند تفعيل checkbox (لـ mobile بدون جافاسكربت) */
+.nav-dropdown input[type="checkbox"]:checked + label + .nav-dropdown__list,
+.nav-dropdown input[type="checkbox"]:checked ~ .nav-dropdown__list {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* إذا كنت تستخدم hover على الكمبيوتر */
+@media (hover: hover) and (pointer: fine) {
+  .nav-dropdown:hover > .nav-dropdown__list {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* روابط داخل القائمة */
+.nav-dropdown__list li a {
+  display: block;
+  padding: 10px 14px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.nav-dropdown__list li a:hover,
+.nav-dropdown__list li a:focus {
+  background: var(--name-color);
+  color: #fff;
+}
+
+/* tiny accessibility focus style */
+.nav-dropdown > label:focus {
+  outline: 2px solid rgba(41,60,152,0.18);
+  outline-offset: 2px;
+}
+
+/* ================== DESKTOP LAYOUT (default) ================== */
+/* اجعل القوائم افقية على شاشات كبيرة لو رغبت */
+.nav-bar__group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Nav-dropdown بصيغة افقية من الداخل (عند العرض) */
+.nav-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* نضمن أن القوائم الافقية (داخل ul) تظهر كصف واحد على الكمبيوتر */
+.nav-dropdown__list {
+  flex-direction: column; /* keep column by default to avoid layout break */
+}
+
+/* ================== MOBILE (small screens) ================== */
+@media (max-width: 767px) {
+  /* nav items تصطف عمودياً */
+  .nav-bar__group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  /* nav-dropdown يصبح بلوك بعرض كامل */
+  .nav-dropdown {
+    width: 100%;
+    display: block;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    background: transparent;
+  }
+
+  /* label كبازل للعنصر يظهر بشكل واضح */
+  .nav-dropdown > label {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 6px;
+    font-weight: bold;
+    color: #eee;
+  }
+
+  /* قائمة الخيارات تتحول لتكون جزء من عمود القوائم */
+  .nav-dropdown__list {
+    position: static;
+    box-shadow: none;
+    border: none;
+    background: #111; /* dark bg for mobile dropdown list (you can change) */
+    padding-left: 0;
+    padding-right: 0;
+    margin: 6px 0 0 0;
+    min-width: 100%;
+  }
+
+  .nav-dropdown__list li a {
+    color: #ddd;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .nav-dropdown__list li:first-child a {
+    border-top: none;
+  }
+
+  /* عند الإغلاق - قاعدة مرنة للعرض */
+  .nav-dropdown input[type="checkbox"]:not(:checked) + label + .nav-dropdown__list {
+    display: none;
+    opacity: 0;
+    transform: none;
+  }
+
+  /* checked تظهر */
+  .nav-dropdown input[type="checkbox"]:checked + label + .nav-dropdown__list {
+    display: flex;
+    opacity: 1;
+  }
+}
+@media (max-width: 767px) {
+  .nav-bar__group {
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+  }
+
+  .nav-dropdown {
+    width: 100%;
+    display: block;
+  }
+
+  .nav-dropdown > label {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--name-color);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-bottom: 4px;
+  }
+
+  .nav-dropdown__list {
+    display: none;
+    flex-direction: column;
+    background: #1c1c1c;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .nav-dropdown__list li a {
+    color: #fff;
+    padding: 10px 16px;
+    display: block;
+    text-decoration: none;
+  }
+
+  .nav-dropdown input[type="checkbox"]:checked + label + .nav-dropdown__list {
+    display: flex;
+  }
+
+  .nav-dropdown__list li a:hover {
+    background: var(--background_trans-color);
+  }
+}
+/* اخفاء checkbox الخاص بالزر */
+#toggle-nav {
+  display: none;
+}
+
+/* تصميم زر العودة */
+.btn-toggle-nav {
+  display: inline-block;
+  padding: 10px 20px;
+  background: var(--name-color);
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* إخفاء القوائم افتراضياً */
+.nav-bar__group {
+  display: none; /* مخفية بشكل افتراضي */
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* عند الضغط على زر العودة تظهر القوائم */
+#toggle-nav:checked + .btn-toggle-nav + .nav-bar__group {
+  display: flex;
+}
+/* ======= NAVBAR MOBILE DROPDOWN ======= */
+#toggle-nav {
+  display: none; /* اخفاء الـ checkbox الخاص بزر العودة */
+}
+
+/* زر العودة */
+.btn-toggle-nav {
+    display: inline-block;
+    padding: 10px 10px;
+    background: var(--name-color);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    top: -185px;
+    position: relative;
+}
+
+/* القوائم مخفية افتراضياً */
+.nav-bar__group {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: #fff;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    position: relative;
+    z-index: 10;
+    top: -160px;
+}
+
+/* اظهار القائمة عند تفعيل زر العودة */
+#toggle-nav:checked + .nav-bar__group {
+  display: flex;
+}
+
+/* كل Dropdown */
+.nav-dropdown input[type="checkbox"] {
+  display: none; /* اخفاء checkbox الخاص بالقائمة */
+}
+
+.nav-dropdown label.nav__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* ================== NOTES ==================
+- لا تكرر id="menu2" في أكثر من عنصر؛ إذا استخدمت input+label داخل كل nav فاستخدم نفس المقطع HTML (input بدون id أو id فريد لكل nav).
+- توضع هذه القواعد في أسفل ملف css/index.css لتتأكد أنها تطغى على أي قواعد سابقة عند الحاجة.
+- إذا أردت أن أدمج نسخة كاملة من css/index.css مع هذا التعديل (نسخة "جاهزة استبدال") سأضعها هنا أيضاً.
+ */
